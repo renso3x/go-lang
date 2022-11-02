@@ -13,14 +13,26 @@ func main() {
 
 	
 	// declare variable with data-type
-	var userName string
+	var firstName string
+	var lastName string
+	var email string
 	var userTickets int
 
 
 	// Get user value by -> using pointer `&variable`
-	fmt.Scan(&userName)
+	fmt.Println("Enter your firstname: ")
+	fmt.Scan(&firstName)
 
-	fmt.Printf("User %v booked %v tickets. \b", userName, userTickets)
+	fmt.Println("Enter your lastname: ")
+	fmt.Scan(&lastName)
+
+	fmt.Println("Enter your email: ")
+	fmt.Scan(&email)
+
+	fmt.Println("Enter number of tickets ")
+	fmt.Scan(&userTickets)
+
+	fmt.Printf("Thank you %v %v for booking %v tickets. You will recieve a confirmation email %v \n", firstName, lastName, email, userTickets)
 
 }
 
