@@ -37,26 +37,33 @@ func main() {
 		fmt.Println("Enter number of tickets ")
 		fmt.Scan(&userTickets)
 
-		remainingTickets = remainingTickets - userTickets
-		bookings = append(bookings, firstName + " " + lastName)
+		if userTickets <= remainingTickets {
+			remainingTickets = remainingTickets - userTickets
+			bookings = append(bookings, firstName + " " + lastName)
 
-		// fmt.Printf("The whole slice: %v\n", bookings)
-		// fmt.Printf("The first value: %v\n", bookings[0])
-		// fmt.Printf("Array Type: %v\n", bookings)
-		// fmt.Printf("Array Length: %v\n", len(bookings))
+			fmt.Printf("Thank you %v %v for booking %v tickets. You will recieve a confirmation email %v \n", firstName, lastName, email, userTickets)
+			fmt.Printf("%v tickets remaining for %v\n", remainingTickets, conferenceName)
 
-		fmt.Printf("Thank you %v %v for booking %v tickets. You will recieve a confirmation email %v \n", firstName, lastName, email, userTickets)
-		fmt.Printf("%v tickets remaining for %v\n", remainingTickets, conferenceName)
+			// Loop slices or arrays
+			firstNames := []string{}
+			// for loop
+			for _, booking := range bookings {
+				var names = strings.Fields(booking) // splits white space
+				firstNames = append(firstNames, names[0])
+			}
 
+			fmt.Printf("These are the first names of the bookings: %v \n", firstNames)
 
-		firstNames := []string{}
-		// Loop slices or arrays
-		for _, booking := range bookings {
-			var names = strings.Fields(booking) // splits white space
-			firstNames = append(firstNames, names[0])
+			noTicketsRemaining := remainingTickets == 0
+			if noTicketsRemaining {
+				// end the program
+				fmt.Println("Our conference is sold out. Come back next year")
+				break
+			}
+		} else {
+			fmt.Printf("We only have %v tickets remaining, you can't book %v tickets\n", remainingTickets, userTickets)
+			fmt.Printf("Please try again. \n")
 		}
-
-		fmt.Printf("These are the first names of the bookings: %v \n", firstNames)
 	}
 }
 
