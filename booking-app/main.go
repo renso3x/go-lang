@@ -16,13 +16,14 @@ func main() {
 	fmt.Printf("We have total of %v tickets and %v are still available \n", CONFERENCE_TICKET, remainingTickets)
 	fmt.Printf("Get your tickets here to attend \n")
 
-	// Infite loop
-	for {
+	// Infite loop | while loop
+	for remainingTickets > 0 && len(bookings) < 50 {
 		// declare variable with data-type
 		var firstName string
 		var lastName string
 		var email string
 		var userTickets uint
+		var city string
 
 		// Get user value by -> using pointer `&variable`
 		fmt.Println("Enter your firstname: ")
@@ -37,33 +38,47 @@ func main() {
 		fmt.Println("Enter number of tickets ")
 		fmt.Scan(&userTickets)
 
-		if userTickets <= remainingTickets {
-			remainingTickets = remainingTickets - userTickets
-			bookings = append(bookings, firstName + " " + lastName)
+		fmt.Println("Enter your city ")
+		fmt.Scan(&city)
 
-			fmt.Printf("Thank you %v %v for booking %v tickets. You will recieve a confirmation email %v \n", firstName, lastName, email, userTickets)
-			fmt.Printf("%v tickets remaining for %v\n", remainingTickets, conferenceName)
+		// User Validation
+		isValidName := len(firstName) >= 2 && len(lastName) >= 2
+		isValidEmail := strings.Contains(email, "@")
+		isValidTickets := userTickets > 0 && userTickets <= remainingTickets
+		isValidCity := city == "sg" || city == "ph"
 
-			// Loop slices or arrays
-			firstNames := []string{}
-			// for loop
-			for _, booking := range bookings {
-				var names = strings.Fields(booking) // splits white space
-				firstNames = append(firstNames, names[0])
-			}
-
-			fmt.Printf("These are the first names of the bookings: %v \n", firstNames)
-
-			noTicketsRemaining := remainingTickets == 0
-			if noTicketsRemaining {
-				// end the program
-				fmt.Println("Our conference is sold out. Come back next year")
-				break
-			}
+		if !isValidName || !isValidEmail ||! isValidTickets || !isValidCity {
+			fmt.Printf("Please enter your correct details. \n")
 		} else {
-			fmt.Printf("We only have %v tickets remaining, you can't book %v tickets\n", remainingTickets, userTickets)
-			fmt.Printf("Please try again. \n")
+			if userTickets <= remainingTickets {
+				remainingTickets = remainingTickets - userTickets
+				bookings = append(bookings, firstName + " " + lastName)
+
+				fmt.Printf("Thank you %v %v for booking %v tickets. You will recieve a confirmation email %v \n", firstName, lastName, email, userTickets)
+				fmt.Printf("%v tickets remaining for %v\n", remainingTickets, conferenceName)
+
+				// Loop slices or arrays
+				firstNames := []string{}
+				// for loop
+				for _, booking := range bookings {
+					var names = strings.Fields(booking) // splits white space
+					firstNames = append(firstNames, names[0])
+				}
+
+				fmt.Printf("These are the first names of the bookings: %v \n", firstNames)
+
+				noTicketsRemaining := remainingTickets == 0
+				if noTicketsRemaining {
+					// end the program
+					fmt.Println("Our conference is sold out. Come back next year")
+					break
+				}
+			} else {
+				fmt.Printf("We only have %v tickets remaining, you can't book %v tickets\n", remainingTickets, userTickets)
+				fmt.Printf("Please try again. \n")
+			}
 		}
+
 	}
 }
 
