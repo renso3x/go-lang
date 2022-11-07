@@ -48,7 +48,15 @@ func main() {
 		isValidCity := city == "sg" || city == "ph"
 
 		if !isValidName || !isValidEmail ||! isValidTickets || !isValidCity {
-			fmt.Printf("Please enter your correct details. \n")
+			if !isValidName {
+				fmt.Println("Name is too short")
+			}
+			if !isValidEmail {
+				fmt.Println("Email is not valid")
+			}
+			if !isValidTickets {
+				fmt.Println("Number of tickets you entered is invalid")
+			}
 		} else {
 			if userTickets <= remainingTickets {
 				remainingTickets = remainingTickets - userTickets
