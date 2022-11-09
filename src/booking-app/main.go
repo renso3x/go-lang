@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 	"mymodules/util"
 )
 
@@ -40,6 +41,7 @@ func main() {
 		} else {
 			if userTickets <= remainingTickets {
 				makeBooking(userTickets, firstName, lastName, email)	
+				go sendTicket(userTickets, firstName, lastName, email)
 
 				firstNames := printFirstNames()
 
@@ -116,4 +118,15 @@ func makeBooking(userTickets uint, firstName string, lastName string, email stri
 
 	fmt.Printf("Thank you %v %v for booking %v tickets. You will recieve a confirmation email %v \n", firstName, lastName, userTickets, email)
 	fmt.Printf("%v tickets remaining for %v\n", remainingTickets, CONFERENCE_TICKET)
+}
+
+// Go Routine -> this will run its own thread Non-Blocking
+func sendTicket(userTickets uint, firstName string, lastName string, email string) {
+	// Simulate trigger for a second
+	time.Sleep(3 * time.Second)
+
+	var ticket = fmt.Sprintf("%v tickets for %v %v\n", userTickets, firstName, lastName)
+	fmt.Println("################")
+	fmt.Printf("Sending ticket: %v\nto email address\n %v", ticket, email)
+	fmt.Println("################")
 }
