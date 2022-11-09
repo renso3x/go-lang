@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"time"
+	"sync"
 	"mymodules/util"
 )
 
@@ -18,47 +19,48 @@ type UserData struct {
 	ticket uint
 }
 
+// Concurrency
+var wg = sync.WaitGroup{}
+
 func main() {
 	greetUsers()
+	// Get User Input
+	firstName, lastName, email, userTickets := getUserInput()
+	// User Validation
+	isValidName, isValidEmail, isValidTickets := util.ValidateUserInput(firstName, lastName, email, userTickets, remainingTickets)
+	
+	if !isValidName || !isValidEmail ||! isValidTickets {
+		if !isValidName {
+			fmt.Println("Name is too short")
+		}
+		if !isValidEmail {
+			fmt.Println("Email is not valid")
+		}
+		if !isValidTickets {
+			fmt.Println("Number of tickets you entered is invalid")
+		}
+	} else {
+		if userTickets <= remainingTickets {
+			makeBooking(userTickets, firstName, lastName, email)	
+			
+			wg.Add(1) // value will increment whenever you have another threads
+			go sendTicket(userTickets, firstName, lastName, email)
 
-	// Infite loop | while loop
-	for remainingTickets > 0 && len(bookings) < 50 {
-		// Get User Input
-		firstName, lastName, email, userTickets := getUserInput()
-		// User Validation
-		isValidName, isValidEmail, isValidTickets := util.ValidateUserInput(firstName, lastName, email, userTickets, remainingTickets)
-		
-		if !isValidName || !isValidEmail ||! isValidTickets {
-			if !isValidName {
-				fmt.Println("Name is too short")
-			}
-			if !isValidEmail {
-				fmt.Println("Email is not valid")
-			}
-			if !isValidTickets {
-				fmt.Println("Number of tickets you entered is invalid")
+			firstNames := printFirstNames()
+
+			fmt.Printf("These are the first names of the bookings: %v \n", firstNames)
+
+			noTicketsRemaining := remainingTickets == 0
+			if noTicketsRemaining {
+				// end the program
+				fmt.Println("Our conference is sold out. Come back next year")
 			}
 		} else {
-			if userTickets <= remainingTickets {
-				makeBooking(userTickets, firstName, lastName, email)	
-				go sendTicket(userTickets, firstName, lastName, email)
-
-				firstNames := printFirstNames()
-
-				fmt.Printf("These are the first names of the bookings: %v \n", firstNames)
-
-				noTicketsRemaining := remainingTickets == 0
-				if noTicketsRemaining {
-					// end the program
-					fmt.Println("Our conference is sold out. Come back next year")
-					break
-				}
-			} else {
-				fmt.Printf("We only have %v tickets remaining, you can't book %v tickets\n", remainingTickets, userTickets)
-				fmt.Printf("Please try again. \n")
-			}
+			fmt.Printf("We only have %v tickets remaining, you can't book %v tickets\n", remainingTickets, userTickets)
+			fmt.Printf("Please try again. \n")
 		}
 	}
+	wg.Wait() // waits the threads are done
 }
 
 func greetUsers() {
@@ -129,4 +131,7 @@ func sendTicket(userTickets uint, firstName string, lastName string, email strin
 	fmt.Println("################")
 	fmt.Printf("Sending ticket: %v\nto email address\n %v", ticket, email)
 	fmt.Println("################")
+
+	// Emit event that this go routine is done
+	wg.Done()
 }
