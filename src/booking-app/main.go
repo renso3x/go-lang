@@ -2,15 +2,20 @@ package main
 
 import (
 	"fmt"
-	"strings"
-	"strconv"
 	"mymodules/util"
 )
 
 const CONFERENCE_TICKET = 50
 var conferenceName string = "Go Conference"
 var remainingTickets uint = 50
-var bookings = make([]map[string]string, 0) // initialize a list of maps
+var bookings = make([]UserData, 0) // initialize a list of maps
+
+type UserData struct {
+	firstName string
+	lastName string
+	email string
+	ticket uint
+}
 
 func main() {
 	greetUsers()
@@ -65,7 +70,7 @@ func printFirstNames() []string {
 	firstNames := []string{}
 	// for loop
 	for _, booking := range bookings {
-		firstNames = append(firstNames, booking["firstName"]) // get the key object from booking
+		firstNames = append(firstNames, booking.firstName) // get the key object from booking
 	}
 
 	return firstNames
@@ -98,14 +103,17 @@ func makeBooking(userTickets uint, firstName string, lastName string, email stri
 	remainingTickets = remainingTickets - userTickets
 
 	// create a map for a user -> key value pair
-	var userData = make(map[string]string)
-	userData["firstName"] = firstName
-	userData["lastName"] = lastName
-	userData["email"] = email
-	userData["tickets"] = strconv.FormatUint(uint64(userTickets), 10)
+	var userData = UserData {
+		firstName: firstName,
+		lastName: lastName,
+		email: email,
+		ticket: userTickets,
+	}
 
 	bookings = append(bookings, userData)
 
-	fmt.Printf("Thank you %v %v for booking %v tickets. You will recieve a confirmation email %v \n", firstName, lastName, email, userTickets)
+	fmt.Printf("List of bookings is %v\n", bookings)
+
+	fmt.Printf("Thank you %v %v for booking %v tickets. You will recieve a confirmation email %v \n", firstName, lastName, userTickets, email)
 	fmt.Printf("%v tickets remaining for %v\n", remainingTickets, CONFERENCE_TICKET)
 }
